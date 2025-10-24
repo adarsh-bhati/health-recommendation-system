@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container-fluid">
+    <!-- Logo / Site Name -->
+    <a class="navbar-brand fw-bold text-uppercase" href="{{ url_for('register') }}">
+      <span class="text-warning">Health</span>Care
+    </a>
+
+    <!-- Navbar Toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ url_for('home') }}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('about') }}">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('personhealth') }}">Health Form</a>
+        </li>
+      </ul>
+
+      <!-- ✅ Right Side Placeholder -->
+      <div id="nav-right" class="ms-auto d-flex align-items-center"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- Dashboard Body -->
+<div class="container mt-5">
+  <div class="text-center">
+    <h1 class="fw-bold text-primary mb-3">Welcome to Health Dashboard</h1>
+    <p class="lead text-muted">
+      Track your health, calculate BMI, and get personalized workout and diet suggestions instantly.
+    </p>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title text-primary">🏋️‍♂️ Health Form</h5>
+          <p class="card-text">Enter your age, height, and weight to get BMI & personalized recommendations.</p>
+          <a href="{{ url_for('personhealth') }}" class="btn btn-primary">Open Form</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title text-primary">🤖 Chatbot</h5>
+          <p class="card-text">Ask health-related queries and get instant responses from our smart assistant.</p>
+          <a href="{{ url_for('chatbot_page') }}" class="btn btn-primary">Chat Now</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title text-primary">📈 Progress</h5>
+          <p class="card-text">Visualize your weight and fitness progress over time with interactive graphs.</p>
+          <a href="{{ url_for('progress') }}" class="btn btn-primary">View Progress</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

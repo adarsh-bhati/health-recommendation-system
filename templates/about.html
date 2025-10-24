@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}About - HealthCare{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-uppercase" href="{{ url_for('dashboard') }}">
+      <span class="text-warning">Health</span>Care
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('personhealth') }}">Health Form</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('chatbot_page') }}">Chatbot</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ✅ About Content -->
+<div class="container mt-5">
+  <div class="text-center mb-4">
+    <h1 class="fw-bold text-primary">About HealthCare</h1>
+    <p class="lead text-muted">Your personal fitness and wellness companion.</p>
+  </div>
+
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      <img src="https://cdn-icons-png.flaticon.com/512/2966/2966485.png" alt="Health Image" class="img-fluid rounded shadow">
+    </div>
+    <div class="col-md-6">
+      <h4 class="text-primary">Our Mission</h4>
+      <p>
+        HealthCare is a smart, AI-powered health monitoring platform built to simplify fitness management.
+        Our system calculates BMI, provides health insights, and features an AI chatbot for quick, accurate guidance.
+      </p>
+      <h4 class="text-primary">Key Features</h4>
+      <ul>
+        <li>Personalized BMI and fitness insights</li>
+        <li>AI chatbot for real-time health advice</li>
+        <li>Progress tracking with visual graphs</li>
+        <li>Secure user registration and dashboard</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Footer -->
+<footer class="bg-primary text-white text-center py-3 mt-5">
+  <p class="mb-0">&copy; 2025 HealthCare System | Created by <strong>Adarsh Bhati</strong></p>
+</footer>
+{% endblock %}

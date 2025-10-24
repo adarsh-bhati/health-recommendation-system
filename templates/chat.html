@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .chat-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .suggested-questions {
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .suggested-questions p {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #495057;
+            font-size: 1.1em;
+        }
+
+        .suggestion-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .suggestion-btn {
+            background: white;
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .suggestion-btn:hover {
+            background: #4CAF50;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .chat-box {
+            height: 400px;
+            overflow-y: auto;
+            padding: 25px;
+            background: #fafafa;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .user-bubble {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 12px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .user-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .bot-icon {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .chat-input-container {
+            padding: 25px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #4CAF50;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .emergency-alert {
+            background: #ff4444;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: white;
+            color: #4CAF50;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #4CAF50;
+            color: white;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('dashboard') }}" class="back-btn">← Back to Dashboard</a>
+    
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>🤖 Health Assistant</h1>
+            <p>Ask me about diet, exercise, symptoms, mental health, and more!</p>
+        </div>
+        
+        <div class="suggested-questions">
+            <p><strong>Try asking:</strong></p>
+            <div class="suggestion-buttons">
+                <button class="suggestion-btn" onclick="addSuggestion('What should I eat for weight loss?')">
+                    💪 Weight loss diet
+                </button>
+                <button class="suggestion-btn" onclick="addSuggestion('How to reduce stress and anxiety?')">
+                    😌 Mental health tips
+                </button>
+                <button class="suggestion-btn" onclick="addSuggestion('Best exercises for beginners')">
+                    🏃‍♂️ Exercise advice
+                </button>
+                <button class="suggestion-btn" onclick="addSuggestion('What to do for headache?')">
+                    🤕 Symptom help
+                </button>
+                <button class="suggestion-btn" onclick="addSuggestion('How to improve sleep quality?')">
+                    😴 Sleep tips
+                </button>
+                <button class="suggestion-btn" onclick="addSuggestion('Healthy diet plan')">
+                    🥗 Nutrition guide
+                </button>
+            </div>
+        </div>
+        
+        <div class="chat-box" id="chatBox">
+            <div class="message bot-message">
+                <div class="message-icon bot-icon">🤖</div>
+                <div class="message-bubble bot-bubble">
+                    Hello! I'm your health assistant. I can help you with diet plans, exercise routines, mental health tips, symptom analysis, and general health advice. What would you like to know today?
+                </div>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <span>Health Assistant is typing...</span>
+        </div>
+        
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="userInput" placeholder="Type your health question here..." onkeypress="handleKeyPress(event)">
+            <button class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+
+        function addSuggestion(question) {
+            document.getElementById('userInput').value = question;
+            sendMessage();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+            
+            if (!message) return;
+
+            // Add user message to chat
+            addMessageToChat(message, 'user');
+            userInput.value = '';
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Send to backend
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideTypingIndicator();
+                addMessageToChat(data.reply, 'bot');
+                
+                // Auto-scroll to bottom
+                scrollToBottom();
+            })
+            .catch(error => {
+                hideTypingIndicator();
+                addMessageToChat('Sorry, I encountered an error. Please try again.', 'bot');
+                console.error('Error:', error);
+            });
+        }
+
+        function addMessageToChat(message, sender) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            // Check if it's an emergency message
+            const isEmergency = message.includes('🚨 EMERGENCY:');
+            
+            if (isEmergency) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'emergency-alert';
+                alertDiv.textContent = message;
+                chatBox.appendChild(alertDiv);
+            } else {
+                if (sender === 'user') {
+                    messageDiv.innerHTML = `
+                        <div class="message-bubble user-bubble">${message}</div>
+                        <div class="message-icon user-icon">👤</div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="message-icon bot-icon">🤖</div>
+                        <div class="message-bubble bot-bubble">${formatMessage(message)}</div>
+                    `;
+                }
+                chatBox.appendChild(messageDiv);
+            }
+            
+            // Add to history
+            chatHistory.push({ sender, message });
+            
+            scrollToBottom();
+        }
+
+        function formatMessage(message) {
+            // Format bold text
+            message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Format line breaks
+            message = message.replace(/\n/g, '<br>');
+            
+            return message;
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'flex';
+            scrollToBottom();
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function scrollToBottom() {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Initial scroll to bottom
+        scrollToBottom();
+
+        // Focus on input field when page loads
+        document.getElementById('userInput').focus();
+    </script>
+</body>
+</html>

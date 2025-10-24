@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Home - HealthCare{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-uppercase" href="{{ url_for('dashboard') }}">
+      <span class="text-warning">Health</span>Care
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" href="{{ url_for('dashboard') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('personhealth') }}">Health Form</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('chatbot_page') }}">Chatbot</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('progress') }}">Progress</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ✅ Hero Section -->
+<section class="py-5 text-center bg-light">
+  <div class="container">
+    <h1 class="fw-bold text-primary mb-3">Your Health, Simplified</h1>
+    <p class="lead text-muted">
+      Track your health, chat with our AI assistant, and get fitness tips tailored just for you.
+    </p>
+    <a href="{{ url_for('personhealth') }}" class="btn btn-primary btn-lg mt-3">Start Now</a>
+  </div>
+</section>
+
+<!-- ✅ Features Section -->
+<section class="container mt-5">
+  <div class="row text-center">
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3">
+        <h5 class="fw-bold text-primary">💪 Personalized Health Form</h5>
+        <p>Calculate your BMI and get health recommendations based on your goals and activity level.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3">
+        <h5 class="fw-bold text-primary">🤖 Smart Chatbot</h5>
+        <p>Ask health questions and get instant advice from our intelligent health assistant.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3">
+        <h5 class="fw-bold text-primary">📈 Progress Tracking</h5>
+        <p>Visualize your weight and health trends to stay motivated and consistent.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ✅ Footer -->
+<footer class="bg-primary text-white text-center py-3 mt-5">
+  <p class="mb-0">&copy; 2025 HealthCare System | Designed by <strong>Adarsh Bhati and himanshu dhurve</strong></p>
+</footer>
+{% endblock %}

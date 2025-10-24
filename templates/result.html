@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}BMI Result{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow-lg border-0">
+    <div class="card-body text-center p-5">
+      <h1 class="fw-bold text-primary mb-3">🎯 Your BMI Result</h1>
+
+      <h2 class="display-5 mb-4">
+        <span class="badge bg-info text-dark px-4 py-2">
+          BMI: {{ bmi }}
+        </span>
+      </h2>
+
+      <!-- Dynamic Recommendation -->
+      {% if bmi < 18.5 %}
+      <div class="alert alert-info fs-5">
+        You are <b>Underweight</b>. Eat calorie-rich foods and focus on strength training.
+      </div>
+      <img src="https://cdn-icons-png.flaticon.com/512/2927/2927344.png" 
+           alt="Underweight Icon" width="120" class="my-3">
+      {% elif bmi < 25 %}
+      <div class="alert alert-success fs-5">
+        You have a <b>Healthy Weight</b>! Maintain it with a balanced diet and regular exercise.
+      </div>
+      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" 
+           alt="Healthy Icon" width="120" class="my-3">
+      {% elif bmi < 30 %}
+      <div class="alert alert-warning fs-5">
+        You are <b>Overweight</b>. Focus on cardio and a calorie deficit diet.
+      </div>
+      <img src="https://cdn-icons-png.flaticon.com/512/4333/4333609.png" 
+           alt="Overweight Icon" width="120" class="my-3">
+      {% else %}
+      <div class="alert alert-danger fs-5">
+        You are <b>Obese</b>. Consult a doctor and start a guided weight loss plan.
+      </div>
+      <img src="https://cdn-icons-png.flaticon.com/512/2474/2474358.png" 
+           alt="Obese Icon" width="120" class="my-3">
+      {% endif %}
+
+      <!-- Diet Chart -->
+      <hr class="my-4">
+      <h3 class="fw-bold text-primary mb-3">🍱 Recommended Diet Plan</h3>
+
+      {% if bmi < 18.5 %}
+      <ul class="list-group text-start mb-4">
+        <li class="list-group-item">🥛 Drink full-cream milk twice a day.</li>
+        <li class="list-group-item">🍞 Eat calorie-dense foods: rice, bananas, nuts, paneer.</li>
+        <li class="list-group-item">🍗 Include high-protein foods like eggs, chicken, lentils.</li>
+        <li class="list-group-item">🏋️‍♂️ Do resistance/weight training to gain healthy mass.</li>
+      </ul>
+
+      {% elif bmi < 25 %}
+      <ul class="list-group text-start mb-4">
+        <li class="list-group-item">🥗 Eat a balanced diet of proteins, carbs & fats.</li>
+        <li class="list-group-item">🍎 Include fresh fruits and vegetables daily.</li>
+        <li class="list-group-item">💧 Stay hydrated (2–3 liters/day).</li>
+        <li class="list-group-item">🚶‍♂️ Exercise 30 mins/day for maintenance.</li>
+      </ul>
+
+      {% elif bmi < 30 %}
+      <ul class="list-group text-start mb-4">
+        <li class="list-group-item">🥦 Eat more vegetables, soups, and fiber-rich foods.</li>
+        <li class="list-group-item">🚫 Avoid sugar, junk, and fried food.</li>
+        <li class="list-group-item">🏃‍♂️ Do 45 mins cardio (brisk walk, jogging, cycling).</li>
+        <li class="list-group-item">💧 Drink green tea and stay hydrated.</li>
+      </ul>
+
+      {% else %}
+      <ul class="list-group text-start mb-4">
+        <li class="list-group-item">🥗 Follow a low-carb, high-fiber diet.</li>
+        <li class="list-group-item">🍋 Include lemon water and salads in your meals.</li>
+        <li class="list-group-item">🚴‍♀️ Do low-impact exercises like walking & swimming.</li>
+        <li class="list-group-item">⏱️ Track calories and consult a nutritionist if needed.</li>
+      </ul>
+      {% endif %}
+
+      <!-- Buttons -->
+      <div class="mt-4">
+        <a href="{{ url_for('progress') }}" class="btn btn-primary me-2">📊 View Progress</a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">🏠 Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="bg-primary text-white text-center py-3 mt-5">
+  <p class="mb-0">&copy; 2025 HealthCare | Developed by <b>Adarsh Bhati and himanshu dhurve</b></p>
+</footer>
+{% endblock %}

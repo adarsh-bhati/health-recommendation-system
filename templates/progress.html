@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Progress{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="text-center mb-4">
+    <h1 class="fw-bold text-primary">📈 Your BMI Progress</h1>
+    <p class="lead text-muted">Track your BMI trends over time and compare them with healthy ranges.</p>
+  </div>
+
+  <!-- Graph -->
+  <div class="text-center mb-5">
+    <img src="/{{ img_path }}" alt="BMI Progress Graph" 
+         class="img-fluid rounded shadow" style="max-width: 700px; border: 2px solid #007bff;">
+  </div>
+
+  <!-- Table -->
+  <div class="card shadow-lg mb-5">
+    <div class="card-body">
+      <h4 class="text-center text-primary mb-3">🧾 Your Health Records</h4>
+      <div class="table-responsive">
+        <table class="table table-hover text-center align-middle">
+          <thead class="table-primary">
+            <tr>
+              <th>#</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Weight (kg)</th>
+              <th>Height (m)</th>
+              <th>BMI</th>
+              <th>Activity</th>
+              <th>Goal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in progress_data %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ record.age }}</td>
+              <td>{{ record.gender }}</td>
+              <td>{{ record.weight }}</td>
+              <td>{{ record.height }}</td>
+              <td>
+                {% if record.bmi < 18.5 %}
+                  <span class="badge bg-info text-dark">Underweight</span> {{ record.bmi }}
+                {% elif record.bmi < 25 %}
+                  <span class="badge bg-success">Normal</span> {{ record.bmi }}
+                {% elif record.bmi < 30 %}
+                  <span class="badge bg-warning text-dark">Overweight</span> {{ record.bmi }}
+                {% else %}
+                  <span class="badge bg-danger">Obese</span> {{ record.bmi }}
+                {% endif %}
+              </td>
+              <td>{{ record.activity }}</td>
+              <td>{{ record.goal }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="text-center">
+    <a href="{{ url_for('personhealth') }}" class="btn btn-primary me-2">➕ Add New Entry</a>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">⬅ Back to Dashboard</a>
+  </div>
+</div>
+
+<footer class="bg-primary text-white text-center py-3 mt-5">
+  <p class="mb-0">&copy; 2025 HealthCare | Developed by <b>Adarsh Bhati</b></p>
+</footer>
+{% endblock %}
