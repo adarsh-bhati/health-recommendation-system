@@ -14,21 +14,21 @@ import string
 import warnings
 warnings.filterwarnings('ignore')
 
-import os
-
-# ✅ Add this at the top
-if os.environ.get("RENDER"):
-    # Render par SQLite use karo
-    database_uri = 'sqlite:///healthdata.db'
-else:
-    # Local par MySQL use karo  
-    database_uri = 'mysql+pymysql://root:@localhost:3306/healthdata2'
-
 app = Flask(__name__)
-app.secret_key = "superphenomena"
-app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
+app.secret_key = os.environ.get("SECRET_KEY", "superphenomena")
+
+# ✅ UPDATED: PostgreSQL Configuration for Render
+database_url = os.environ.get('DATABASE_URL', 'sqlite:///healthdata.db')
+
+# Fix PostgreSQL URL format for Render
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
+
 # ------------------ DATABASE MODELS ------------------
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -507,12 +507,56 @@ def home():
 def about():
     return render_template('about.html')
 
+# ✅ ADD: Database viewing route
+@app.route('/view-data')
+def view_data():
+    """View all database data"""
+    try:
+        users = User.query.all()
+        health_data = HealthInfo.query.all()
+        
+        user_list = []
+        for user in users:
+            user_list.append({
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'phone': user.phone
+            })
+        
+        health_list = []
+        for data in health_data:
+            bmi = round(data.weight / (data.height ** 2), 2)
+            health_list.append({
+                'id': data.id,
+                'user_id': data.user_id,
+                'age': data.age,
+                'gender': data.gender,
+                'weight': data.weight,
+                'height': data.height,
+                'bmi': bmi,
+                'activity': data.activity_level,
+                'goal': data.goal
+            })
+        
+        return jsonify({
+            'total_users': len(user_list),
+            'total_health_records': len(health_list),
+            'users': user_list,
+            'health_data': health_list
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
-# ------------------ MAIN ------------------
 # ------------------ MAIN ------------------
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+            print("✅ Database tables created successfully!")
+        except Exception as e:
+            print(f"⚠️ Database warning: {e}")
     
     # ✅ FIX: Render.com compatible port binding
     port = int(os.environ.get("PORT", 5005))
