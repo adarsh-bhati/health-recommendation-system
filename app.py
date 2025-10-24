@@ -36,6 +36,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(10), unique=True, nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)  # ✅ NEW: Admin flag
 
 class HealthInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -46,6 +47,22 @@ class HealthInfo(db.Model):
     height = db.Column(db.Float, nullable=False)
     activity_level = db.Column(db.String(50), nullable=False)
     goal = db.Column(db.String(50), nullable=False)
+
+# ------------------ ADMIN AUTHENTICATION ------------------
+def admin_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if 'user_id' not in session:
+            flash("Please login to continue!")
+            return redirect(url_for('login'))
+        
+        user = User.query.get(session['user_id'])
+        if not user or not user.is_admin:
+            flash("🔒 Admin access required!")
+            return redirect(url_for('dashboard'))
+        
+        return func(*args, **kwargs)
+    return wrapper
 
 # ------------------ ENHANCED HEALTH CHATBOT ------------------
 class HealthChatbot:
@@ -340,11 +357,15 @@ def dashboard():
     user_id = session.get('user_id')
     username = None
     user_initial = None
+    is_admin = False
+    
     if user_id:
         user = User.query.get(user_id)
         username = user.username
         user_initial = user.username[0].upper()
-    return render_template('dashboard.html', username=username, user_initial=user_initial)
+        is_admin = user.is_admin
+    
+    return render_template('dashboard.html', username=username, user_initial=user_initial, is_admin=is_admin)
 
 
 @app.route('/personhealth', methods=['GET', 'POST'])
@@ -507,10 +528,52 @@ def home():
 def about():
     return render_template('about.html')
 
-# ✅ ADD: Database viewing route
-@app.route('/view-data')
-def view_data():
-    """View all database data"""
+# ✅ ADD: Secure Admin Routes
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    """Special admin login page"""
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # ✅ HARDCODED ADMIN CREDENTIALS (Change these!)
+        if username == "admin" and password == "admin123":
+            # Find or create admin user
+            admin_user = User.query.filter_by(username=username).first()
+            if not admin_user:
+                admin_user = User(
+                    username=username,
+                    email="admin@healthsystem.com",
+                    password=password,
+                    phone="0000000000",
+                    is_admin=True
+                )
+                db.session.add(admin_user)
+                db.session.commit()
+            
+            session['user_id'] = admin_user.id
+            flash("🔓 Admin login successful!")
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash("❌ Invalid admin credentials!")
+    
+    return render_template('admin_login.html')
+
+@app.route('/admin/dashboard')
+@admin_required
+def admin_dashboard():
+    """Admin dashboard"""
+    total_users = User.query.count()
+    total_health_records = HealthInfo.query.count()
+    
+    return render_template('admin_dashboard.html',
+                         total_users=total_users,
+                         total_health_records=total_health_records)
+
+@app.route('/admin/view-data')
+@admin_required
+def admin_view_data():
+    """🔒 SECURE: View all database data - Admin only"""
     try:
         users = User.query.all()
         health_data = HealthInfo.query.all()
@@ -521,7 +584,8 @@ def view_data():
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'phone': user.phone
+                'phone': user.phone,
+                'is_admin': user.is_admin
             })
         
         health_list = []
@@ -548,6 +612,22 @@ def view_data():
     
     except Exception as e:
         return jsonify({'error': str(e)})
+
+@app.route('/admin/delete-user/<int:user_id>', methods=['POST'])
+@admin_required
+def admin_delete_user(user_id):
+    """Delete user (Admin only)"""
+    try:
+        user = User.query.get(user_id)
+        if user:
+            # Delete associated health data first
+            HealthInfo.query.filter_by(user_id=user_id).delete()
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({'success': True, 'message': 'User deleted successfully'})
+        return jsonify({'success': False, 'message': 'User not found'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
 
 # ------------------ MAIN ------------------
 if __name__ == "__main__":
