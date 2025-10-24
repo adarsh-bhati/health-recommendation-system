@@ -537,7 +537,7 @@ def admin_login():
         password = request.form['password']
         
         # ✅ HARDCODED ADMIN CREDENTIALS (Change these!)
-        if username == "admin" and password == "admin123":
+        if username == "adhimansu" and password == "adhimanshu121":
             # Find or create admin user
             admin_user = User.query.filter_by(username=username).first()
             if not admin_user:
