@@ -14,12 +14,21 @@ import string
 import warnings
 warnings.filterwarnings('ignore')
 
+import os
+
+# ✅ Add this at the top
+if os.environ.get("RENDER"):
+    # Render par SQLite use karo
+    database_uri = 'sqlite:///healthdata.db'
+else:
+    # Local par MySQL use karo  
+    database_uri = 'mysql+pymysql://root:@localhost:3306/healthdata2'
+
 app = Flask(__name__)
 app.secret_key = "superphenomena"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/healthdata2'
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-
 # ------------------ DATABASE MODELS ------------------
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
