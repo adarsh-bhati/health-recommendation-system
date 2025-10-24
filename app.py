@@ -509,7 +509,11 @@ def about():
 
 
 # ------------------ MAIN ------------------
+# ------------------ MAIN ------------------
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(debug=True, port=5005)
+    
+    # ✅ FIX: Render.com compatible port binding
+    port = int(os.environ.get("PORT", 5005))
+    app.run(debug=False, host='0.0.0.0', port=port)
