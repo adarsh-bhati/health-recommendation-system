@@ -76,7 +76,8 @@ class HealthChatbot:
                 "Practice good hygiene and wash hands regularly to prevent infections.",
                 "Avoid smoking and limit alcohol consumption for better health.",
                 "Manage stress through meditation, yoga, or deep breathing exercises.",
-                "Get regular health check-ups to monitor your overall health status."
+                "Get regular health check-ups to monitor your overall health status.",
+                "a balanced diet includes iron rich food , and protien"
             ],
             
             # Diet & Nutrition
