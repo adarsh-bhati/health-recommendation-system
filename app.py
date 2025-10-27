@@ -630,6 +630,36 @@ def admin_delete_user(user_id):
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
 
+@app.route('/admin/live-stats')
+@admin_required
+def live_stats():
+    """Live statistics of the application"""
+    try:
+        total_users = User.query.count()
+        total_health = HealthInfo.query.count()
+        
+        # Recent users (last 10)
+        recent_users = User.query.order_by(User.id.desc()).limit(10).all()
+        
+        recent_users_list = []
+        for user in recent_users:
+            recent_users_list.append({
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'registered': True
+            })
+        
+        return jsonify({
+            'total_users': total_users,
+            'total_health_records': total_health,
+            'recent_users': recent_users_list,
+            'database_url': app.config['SQLALCHEMY_DATABASE_URI'][:50] + '...'  # Hide full URL
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)})    
+
 # ------------------ MAIN ------------------
 if __name__ == "__main__":
     with app.app_context():
