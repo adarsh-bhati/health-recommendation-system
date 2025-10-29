@@ -15,7 +15,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "superphenomena")
+app.secret_key = os.environ.get("SECRET_KEY")
 
 # ✅ UPDATED: PostgreSQL Configuration for Render
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///healthdata.db')
@@ -585,6 +585,7 @@ def admin_view_data():
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
+                'password':user.email,
                 'phone': user.phone,
                 'is_admin': user.is_admin
             })

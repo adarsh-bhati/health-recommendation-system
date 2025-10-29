@@ -28,12 +28,20 @@
 
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+            <input type="password" class="form-control" id="password" name="password" 
+                   pattern="^(?=.*[A-Za-z])(?=.*\d).{6,}$" 
+                   title="Password must contain at least one letter and one number, and be at least 6 characters long"
+                   required>
+            
           </div>
 
           <div class="mb-3">
             <label for="phone" class="form-label">Phone</label>
-            <input type="tel" class="form-control" id="phone" name="phone" required>
+            <input type="tel" class="form-control" id="phone" name="phone" 
+                   pattern="[0-9]{10}" 
+                   title="Phone number must be exactly 10 digits"
+                   required>
+            
           </div>
 
           <button type="submit" class="btn btn-primary w-100">Register</button>
@@ -48,4 +56,30 @@
     </div>
   </div>
 </div>
+
+<!-- ✅ Add Real-time Password Validation -->
+<script>
+document.getElementById('password').addEventListener('input', function(e) {
+  const password = e.target.value;
+  const requirements = document.querySelectorAll('.requirement');
+  
+  // Check minimum length
+  requirements[0].classList.toggle('text-success', password.length >= 6);
+  requirements[0].classList.toggle('text-danger', password.length < 6);
+  
+  // Check for at least one letter
+  requirements[1].classList.toggle('text-success', /[a-zA-Z]/.test(password));
+  requirements[1].classList.toggle('text-danger', !/[a-zA-Z]/.test(password));
+  
+  // Check for at least one number
+  requirements[2].classList.toggle('text-success', /\d/.test(password));
+  requirements[2].classList.toggle('text-danger', !/\d/.test(password));
+});
+</script>
+
+<style>
+.text-success { color: #198754 !important; }
+.text-danger { color: #dc3545 !important; }
+.requirement { transition: color 0.3s ease; }
+</style>
 {% endblock %}
