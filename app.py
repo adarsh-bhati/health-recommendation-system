@@ -585,7 +585,7 @@ def admin_view_data():
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'password':user.email,
+                'password':user.password,
                 'phone': user.phone,
                 'is_admin': user.is_admin
             })
