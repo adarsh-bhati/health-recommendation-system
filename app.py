@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
 
 # ✅ UPDATED: PostgreSQL Configuration for Render
-database_url = os.environ.get('DATABASE_URL', 'sqlite:///healthdata.db')
+database_url = os.environ.get('DATABASE_URL', 'sqlite:///healthdata_52qd.db')
 
 # Fix PostgreSQL URL format for Render
 if database_url and database_url.startswith("postgres://"):
